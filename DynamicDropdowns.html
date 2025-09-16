@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WDV321 Advanced JavaScript</title>
+  <style>
+    #container {
+      background-color: blanchedalmond;
+      width:70%;
+      margin-left:auto;
+      margin-right:auto;
+      padding:5px;
+    }
+    section { display:flex; justify-content:center; gap:12px; }
+    .leftSide, .rightSide {
+      border:thin solid brown;
+      width:50%;
+      padding:15px;
+    }
+    .controls { margin-top:8px; }
+  </style>
+
+  <script>
+    //Data Arrays
+    const teamNames = ["Chiefs","Raiders","Cubs"];
+    const cookies = ["Chocolate Chip Cookie", "Sugar Cookie", "Peanut Butter Cookie"];
+    const candies = ["M&Ms","Baby Ruth","Snickers"]; // fixed typo
+  
+    //Immutable coby of orginal values
+    const ORIGINAL_TEAMS = [...teamNames];
+    const ORIGINAL_PRODUCTS = { kind: "cookies", items: [...cookies] };
+  </script>
+</head>
+<body>
+  <div id="container">
+    <main>
+      <h1>WDV321 Advanced JavaScript</h1>
+      <h2>Dynamic Content - Drop Down Lists</h2>
+      <p>The goals of this assignment:</p>
+      <ol>
+        <li>Demonstrate how to dynamically populate a select element using the <code>document.write()</code> technique</li>
+        <li>Demonstrate how to dynamically populate a select element using the <code>createElement()</code> technique</li>
+        <li>Demonstrate how to dynamically add an option to a select element</li>
+        <li>Demonstrate how to dynamically change the options of a select element</li>
+      </ol>
+
+      <section>
+        <!-- LEFT SIDE -->
+        <div class="leftSide">
+          <h3>Team Names</h3>
+
+          <div>
+            <label for="teamNames">Team Names</label><br/>
+            <select name="teamNames" id="teamNames">
+              <option value="">Select a team</option>
+              <!-- Requirement #1: Populate via document.write() -->
+              <script>
+                for (const name of teamNames) {
+                  document.write(`<option value="${name}">${name}</option>`);
+                }
+              </script>
+            </select>
+            <p>Team Name: <span id="outputName"></span></p>
+          </div>
+
+          <div class="controls">
+            <form id="teamForm" method="post" action="#">
+              <label for="newTeamName">New Team Name: </label>
+              <input type="text" name="newTeamName" id="newTeamName" />
+              <p class="controls">
+                <input type="submit" value="Add Team Name" id="addTeamBtn" />
+                <input type="button" value="Reset" id="resetBtn" />
+              </p>
+            </form>
+          </div>
+
+          <div>
+            <h4>Instructions (implemented):</h4>
+            <ol>
+              <li>Uses <code>document.write()</code> and the <code>teamNames</code> array to populate the select.</li>
+              <li>On selection, displays the chosen team next to “Team Name:”.</li>
+              <li>“Add Team Name” appends the typed value to the select.</li>
+              <li>“Reset” restores original values.</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="rightSide">
+          <h3>Cookies or Candy?</h3>
+
+          <div>
+            <label for="productDisplay">Products: </label><br/>
+            <select name="productDisplay" id="productDisplay">
+              <option value="none">Select a Product</option>
+            </select>
+            <p>Selected Product: <span id="outputProduct"></span></p>
+          </div>
+
+          <p class="controls">
+            <label for="displayCookies">
+              <input type="radio" name="chooseProduct" id="displayCookies" value="cookies" checked />
+              Cookies
+            </label>
+            <br/>
+            <label for="displayCandy">
+              <input type="radio" name="chooseProduct" id="displayCandy" value="candy" />
+              Candy
+            </label>
+          </p>
+
+          <div>
+            <h4>Instructions (implemented):</h4>
+            <ol>
+              <li>Uses the <code>createElement()</code> technique + <code>cookies</code> array to populate <code>productDisplay</code>.</li>
+              <li>On selection, displays the product next to “Selected Product:”.</li>
+              <li>Radio buttons switch the select’s contents between cookies and candy.</li>
+              <li>“Reset” (on the left) also restores this panel to its original state.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    //Populate a <select> from an array using createElement()
+    function populateSelectFromArray(selectEl, items) {
+      //Clear then add a default option
+      selectEl.innerHTML = "";
+      const def = document.createElement("option");
+      def.value = "none";
+      def.textContent = "Select a Product";
+      selectEl.appendChild(def);
+
+      for (const item of items) {
+        const opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+        selectEl.appendChild(opt);
+      }
+    }
+
+    //Reset everything back to the original state
+    function resetAll() {
+      //Left side: team select back to original values and default selection
+      const teamSelect = document.getElementById("teamNames");
+      const outputName = document.getElementById("outputName");
+      const newTeamInput = document.getElementById("newTeamName");
+
+      //Rebuild team select (cannot use document.write after load, so use DOM API)
+      teamSelect.innerHTML = '<option value="">Select a team</option>';
+      for (const name of ORIGINAL_TEAMS) {
+        const opt = new Option(name, name);
+        teamSelect.add(opt);
+      }
+      teamSelect.value = "";
+      outputName.textContent = "";
+      newTeamInput.value = "";
+
+      //Right side: products default to cookies
+      const productSelect = document.getElementById("productDisplay");
+      populateSelectFromArray(productSelect, ORIGINAL_PRODUCTS.items);
+      productSelect.value = "none";
+      document.getElementById("outputProduct").textContent = "";
+
+      //Radio defaults: Cookies checked
+      document.getElementById("displayCookies").checked = true;
+      document.getElementById("displayCandy").checked = false;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      //LEFT: show selected team
+      const teamSelect = document.getElementById("teamNames");
+      const outputName = document.getElementById("outputName");
+      teamSelect.addEventListener("change", () => {
+        outputName.textContent = teamSelect.value || "";
+      });
+
+      //LEFT: add new team name
+      const teamForm = document.getElementById("teamForm");
+      const newTeamInput = document.getElementById("newTeamName");
+      teamForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const val = newTeamInput.value.trim();
+        if (!val) return;
+
+        //Prevent duplicates (case-insensitive)
+        const exists = Array.from(teamSelect.options).some(
+          (o) => o.value.toLowerCase() === val.toLowerCase()
+        );
+        if (!exists) {
+          const opt = new Option(val, val);
+          teamSelect.add(opt);
+        }
+        teamSelect.value = val;
+        outputName.textContent = val;
+        newTeamInput.value = "";
+      });
+
+      //LEFT: reset button
+      document.getElementById("resetBtn").addEventListener("click", resetAll);
+
+      //RIGHT: initial population via createElement() with cookies
+      const productSelect = document.getElementById("productDisplay");
+      populateSelectFromArray(productSelect, cookies);
+
+      //RIGHT: show selected product
+      const outputProduct = document.getElementById("outputProduct");
+      productSelect.addEventListener("change", () => {
+        outputProduct.textContent = productSelect.value === "none" ? "" : productSelect.value;
+      });
+
+      //RIGHT: radio switches between cookies/candy
+      document.getElementById("displayCookies").addEventListener("change", () => {
+        if (document.getElementById("displayCookies").checked) {
+          populateSelectFromArray(productSelect, cookies);
+          outputProduct.textContent = "";
+        }
+      });
+      document.getElementById("displayCandy").addEventListener("change", () => {
+        if (document.getElementById("displayCandy").checked) {
+          populateSelectFromArray(productSelect, candies);
+          outputProduct.textContent = "";
+        }
+      });
+
+      // Initial clean state
+      resetAll();
+    });
+  </script>
+</body>
+</html>
