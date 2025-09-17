@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>WDV321 Advanced Javascript</title>
+	<style>
+		.displayContainer {
+			border: thin solid black;
+			width: 50%;
+			margin-left: 20px;
+			padding: 10px;
+		}
+
+		.hidden {
+			display: none;
+		}
+
+		button {
+			margin-top: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>WDV321 Advanced Javascript</h1>
+	<h2>Dynamic Structure - Display Property Exercise</h2>
+
+	<label>Reason For Contact:
+		<select name="contactType" id="contactType">
+			<option value="">Select Reason</option>
+			<option value="C">Complaints</option>
+			<option value="T">Technical Problems</option>
+			<option value="P">Product Issues</option>
+		</select>
+	</label>
+
+	<section class="displayContainer">
+		<!-- Complaints Block -->
+		<div id="complaintsDiv" class="hidden">
+			<h3>Common Complaints</h3>
+			<select id="complaintsSelect">
+				<option>Long wait time</option>
+				<option>Rude service</option>
+				<option>Overcharged</option>
+				<option>Did not receive product</option>
+			</select>
+			<br>
+			<button onclick="clearComplaints()">Submit</button>
+		</div>
+
+		<!-- Technical Problems Block -->
+		<div id="technicalDiv" class="hidden">
+			<h3>Technical Problems</h3>
+			<label><input type="checkbox" class="techCheckbox" /> Website not loading</label><br>
+			<label><input type="checkbox" class="techCheckbox" /> App crashes</label><br>
+			<label><input type="checkbox" class="techCheckbox" /> Unable to login</label><br>
+			<label><input type="checkbox" class="techCheckbox" /> Broken links</label><br>
+			<button onclick="clearTech()">Submit</button>
+		</div>
+
+		<!-- Product Issues Block -->
+		<div id="productDiv" class="hidden">
+			<h3>Product Issues</h3>
+			<label><input type="radio" name="productIssue" class="productRadio" /> Damaged item</label><br>
+			<label><input type="radio" name="productIssue" class="productRadio" /> Missing parts</label><br>
+			<label><input type="radio" name="productIssue" class="productRadio" /> Wrong size</label><br>
+			<label><input type="radio" name="productIssue" class="productRadio" /> Overcharged</label><br>
+			<button onclick="clearProduct()">Submit</button>
+		</div>
+	</section>
+
+	<script>
+		const dropdown = document.getElementById("contactType");
+		const complaintsDiv = document.getElementById("complaintsDiv");
+		const technicalDiv = document.getElementById("technicalDiv");
+		const productDiv = document.getElementById("productDiv");
+
+		dropdown.addEventListener("change", function () {
+			// Hide all
+			complaintsDiv.classList.add("hidden");
+			technicalDiv.classList.add("hidden");
+			productDiv.classList.add("hidden");
+
+			// Show selected
+			if (this.value === "C") {
+				complaintsDiv.classList.remove("hidden");
+			} else if (this.value === "T") {
+				technicalDiv.classList.remove("hidden");
+			} else if (this.value === "P") {
+				productDiv.classList.remove("hidden");
+			}
+		});
+
+		function clearComplaints() {
+			document.getElementById("complaintsSelect").selectedIndex = 0;
+			alert("Complaint sent!");
+		}
+
+		function clearTech() {
+			const techBoxes = document.querySelectorAll(".techCheckbox");
+			techBoxes.forEach(box => box.checked = false);
+			alert("Technical problems under review!");
+		}
+
+		function clearProduct() {
+			const radios = document.querySelectorAll(".productRadio");
+			radios.forEach(radio => radio.checked = false);
+			alert("Product issues filed!");
+		}
+	</script>
+</body>
+</html>
