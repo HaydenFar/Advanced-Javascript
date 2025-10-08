@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Dynamic elements using createElement()</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .formatted-div {
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            margin-top: 20px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        select {
+            padding: 6px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <p><a href="wdv321HomeWorkPage.html">Homework page</a></p>
+
+    <script>
+        const container = document.createElement("div");
+
+        const heading1 = document.createElement("h2");
+        heading1.textContent = "Select a category: ";
+        container.appendChild(heading1);
+
+        const select = document.createElement("select");
+
+        const defaultOption = document.createElement("option");
+        defaultOption.text = "Select an option";
+        defaultOption.value = "default";
+        defaultOption.selected = true;
+        select.appendChild(defaultOption);
+
+        const option1 = document.createElement("option");
+        option1.text = "Pizza";
+        option1.value = "pizza";
+        select.appendChild(option1);
+
+        const option2 = document.createElement("option");
+        option2.text = "Burritos";
+        option2.value = "burritos";
+        select.appendChild(option2);
+
+        const option3 = document.createElement("option");
+        option3.text = "Sub-sandwiches";
+        option3.value = "subs";
+        select.appendChild(option3);
+
+        container.appendChild(select);
+
+        const heading2 = document.createElement("h2");
+        heading2.textContent = "Choose a Favorite Color";
+        container.appendChild(heading2);
+
+        const colors = ["Red", "Blue", "Green"];
+        const values = ["red", "blue", "green"];
+
+        colors.forEach((color, index) => {
+            const label = document.createElement("label");
+
+            const radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = "color";
+            radio.value = values[index];
+
+            label.appendChild(radio);
+            label.appendChild(document.createTextNode(" " + color));
+            container.appendChild(label);
+        });
+
+        const heading3 = document.createElement("h2");
+        heading3.textContent = "Dynamically Created Div";
+        container.appendChild(heading3);
+
+        const formattedDiv = document.createElement("div");
+        formattedDiv.className = "formatted-div";
+
+        const divHeading = document.createElement("h3");
+        divHeading.textContent = "Runtime Content";
+        formattedDiv.appendChild(divHeading);
+
+        const paragraph = document.createElement("p");
+        paragraph.innerHTML = "This formatted div and web page include the document.createElement method, rather than document.write method, like the last page.";
+        formattedDiv.appendChild(paragraph);
+
+        container.appendChild(formattedDiv);
+
+        document.body.appendChild(container);
+    </script>
+</body>
+</html>
