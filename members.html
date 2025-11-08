@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WDV321 Advanced JavaScript</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { background-color:burlywood; }
+        #container {
+            width:70%;
+            margin:auto;
+            padding:15px;
+            background-color: chocolate;
+        }
+        header { text-align: center; }
+        nav {
+            display:flex;
+            justify-content: space-between;
+            margin-bottom:15px;
+        }
+        main { display:flex; }
+        main section {
+            width:50%;
+            border: thin solid black;
+        }
+        section h2, section h3 { text-align: center; }
+        form { width:70%; margin:auto; }
+        footer p { text-align:center; }
+        .pageHeader { color:blue; }
+    </style>
+    <script>
+        // Cookie utilities
+        function getCookie(name) {
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const ca = decodedCookie.split(';');
+            const cookieName = name + "=";
+            for(let c of ca) {
+                c = c.trim();
+                if (c.indexOf(cookieName) === 0) {
+                    return c.substring(cookieName.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+
+        function deleteCookie(name) {
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+
+        function updateHitCounter() {
+            let hits = parseInt(getCookie("hitCounter")) || 0;
+            document.getElementById("activityDisplay").textContent = hits;
+        }
+
+        // Main logic
+        window.onload = function() {
+            const user = getCookie("authorizedUser");
+            if (!user) {
+                alert("You must be signed in to view this page.");
+                window.location.href = "index(2).html";
+                return;
+            }
+
+            document.querySelector(".pageHeader").textContent = `Welcome Federation Member: ${user}!`;
+            updateHitCounter();
+
+            const eventRegistration = JSON.parse(localStorage.getItem("eventRegistration")) || [];
+            const regDiv = document.getElementById("registrationList");
+
+            if (eventRegistration.length === 0) {
+                regDiv.innerHTML = "<p>No registrations found.</p>";
+            } else {
+                let output = "<ol>";
+                eventRegistration.forEach((entry) => {
+                    output += `<li><strong>${entry.name}</strong> (${entry.email}, ${entry.phone}) — Registered on ${entry.registrationDate}</li>`;
+                });
+                output += "</ol>";
+                regDiv.innerHTML = output;
+            }
+
+            document.getElementById("displayCookieBtn").onclick = () => {
+                console.log(document.cookie);
+                alert("Cookies displayed in console.");
+            };
+
+            document.getElementById("deleteCookieBtn").onclick = () => {
+                deleteCookie("authorizedUser");
+                alert("Authorization deleted. Returning to home page.");
+                window.location.href = "index(2).html";
+            };
+        }
+    </script>
+</head>
+<body>
+    <div id="container">
+
+        <header>
+            <h1>Science Fiction Book Club</h1>
+            <h2>"Predicting the future using or describing the future?"</h2>
+            <h2 class="pageHeader">Welcome Federation Members!</h2>
+        </header>
+
+        <nav>
+            <div>
+                <a href="index(2).html"><button>Home Page</button></a>
+                <a href="members.html"><button>Members Page</button></a>
+            </div>
+        </nav>
+
+        <main>
+            <section class="leftColumn">
+                <h3>Member Information</h3>
+                <p>
+                    <button id="displayCookieBtn">Display Cookie</button>
+                    <button id="deleteCookieBtn">Delete Authorization Cookie</button>
+                </p>
+            </section>
+            <section class="rightColumn">
+                <h3>Upcoming Events</h3>
+                <div><h3>"Did Star Trek predict AI?"</h3></div>
+                <div>
+                    <h3>Current Registrations</h3>
+                    <div id="registrationList"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Copyright &copy;2025 All rights reserved.</p>
+            <p>Current Activity: <span id="activityDisplay">0</span></p>
+        </footer>
+
+    </div>
+</body>
+</html>
